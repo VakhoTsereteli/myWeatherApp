@@ -27,7 +27,17 @@ export default function SearchBar() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [locationResults, setLocationResults] = useState<Location[] | null>(null);
 
-  const setWeather = useWeatherStore((state) => state.setWeather)
+  const setWeather = useWeatherStore((state) => state.setWeather);
+
+  // Fetch weather data using a separate async function
+  const fetchWeatherData = async (placeId: string) => {
+    try {
+      const weather = await useLocationWeather(placeId); // Assume `place_id` is used here
+      setWeather(weather);
+    } catch (error) {
+      console.error("Error fetching weather:", error);
+    }
+  };
 
   const handleSearchQuery = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const newQuery = event.target.value;
@@ -41,14 +51,9 @@ export default function SearchBar() {
     }
   };
 
-  const handleSelect = async (selectedLocation: Location) => {
-    try {
-      const weather = await useLocationWeather(selectedLocation.place_id); // Assume `place_id` is used here
-      setWeather(weather)
-    } catch (error) {
-      console.error("Error fetching weather:", error);
-    }
-  }
+  const handleSelect = (selectedLocation: Location) => {
+    fetchWeatherData(selectedLocation.place_id); // Call the function to fetch weather data
+  };
 
   return (
     <SearchBarUI

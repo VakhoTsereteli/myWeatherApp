@@ -1,0 +1,10 @@
+* {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+body {
+  background: linear-gradient(to right, #404040, #1E1E1E);
+  /* background: #404040; */
+}

@@ -10,7 +10,7 @@ export default function CurrentLocation() {
 
   const setWeather = useWeatherStore((state) => state.setWeather)
 
-  const getCurrentLocation = async (): Promise<void> => {
+  const GetCurrentLocation = async (): Promise<void> => {
     const currentLocation = await useCurrentLocation();
     const weather = await useLocationWeather(currentLocation);
     setWeather(weather);
@@ -18,7 +18,7 @@ export default function CurrentLocation() {
 
   return (
     <CurrentLocationUI
-      getCurrentLocation={getCurrentLocation}
+      getCurrentLocation={GetCurrentLocation}
     />
   )
 }

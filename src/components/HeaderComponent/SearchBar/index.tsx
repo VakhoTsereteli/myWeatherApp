@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
 import axios from "axios";
 import SearchBarUI from "./SearchBarUI";
@@ -26,18 +26,24 @@ export default function SearchBar() {
 
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [locationResults, setLocationResults] = useState<Location[] | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
 
   const setWeather = useWeatherStore((state) => state.setWeather);
 
-  // Fetch weather data using a separate async function
-  const fetchWeatherData = async (placeId: string) => {
-    try {
-      const weather = await useLocationWeather(placeId); // Assume `place_id` is used here
-      setWeather(weather);
-    } catch (error) {
-      console.error("Error fetching weather:", error);
+  // Use useEffect to fetch weather data when selectedLocation changes
+  useEffect(() => {
+    if (selectedLocation) {
+      const fetchWeather = async () => {
+        try {
+          const weather = await useLocationWeather(selectedLocation.place_id); // Assume `place_id` is used here
+          setWeather(weather);
+        } catch (error) {
+          console.error("Error fetching weather:", error);
+        }
+      };
+      fetchWeather();
     }
-  };
+  }, [selectedLocation, setWeather]);
 
   const handleSearchQuery = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const newQuery = event.target.value;
@@ -52,7 +58,7 @@ export default function SearchBar() {
   };
 
   const handleSelect = (selectedLocation: Location) => {
-    fetchWeatherData(selectedLocation.place_id); // Call the function to fetch weather data
+    setSelectedLocation(selectedLocation); // Update state, triggering useEffect
   };
 
   return (
